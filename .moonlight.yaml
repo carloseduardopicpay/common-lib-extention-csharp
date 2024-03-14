@@ -1,0 +1,15 @@
+sonar:
+  enabled: true
+  type: other
+  
+deploy:
+  type: argocd
+  
+build:
+  enabled: true
+
+steps:
+- name: unit-tests
+  image: 289208114389.dkr.ecr.us-east-1.amazonaws.com/dotnet/sdk:7.0
+  commands:
+    - dotnet test --logger trx

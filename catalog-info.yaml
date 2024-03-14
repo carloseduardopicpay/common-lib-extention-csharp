@@ -1,0 +1,33 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "ms-ppb-acad-naturalperson"
+  tags:
+    - csharp
+    - netcore
+    - cleanarchitecture
+    - grafana
+    - api
+    - apm
+  description: "microservico csharp acad de rating"
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: "ms-ppb-acad-naturalperson"
+    github.com/project-slug: "PicPay/ms-ppb-acad-naturalperson"
+    sonarqube.org/project-key: "PicPay_ms-ppb-acad-naturalperson"
+  labels:
+    moonlight.picpay/language: csharp
+    moonlight.picpay/framework: netcore
+    moonlight.picpay/monitoring: grafana
+    moonlight.picpay/monitoring-strategy: apm
+  links:
+    - url: https://picpay.atlassian.net/browse/ACAD-55
+      title: Jira Board
+      icon: dashboard
+    - url: https://picpay.atlassian.net/browse/ACAD-55
+      title: Confluence Docs
+      icon: dashboard
+spec:
+  lifecycle: production
+  owner: core-bancario
+  type: service
