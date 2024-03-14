@@ -1,0 +1,72 @@
+global:
+  app_stage: prod
+  image:
+    tag: ${artifact.buildNo}
+  releaseNumber: 0
+  jvm_metrics:
+    enabled: true
+    port: 8081
+  externalSecrets:
+  - name: default
+    enabled: true
+    type: vault
+    server: https://vbr.limbo.work/
+    mountPath: kubernetes-autbcb-use1-prd
+    path: kv/financial_services_pf/prd
+    dataFrom:
+      - secretFile: ms-ppb-acad-naturalperson
+
+picpay-ms-v2:
+  apis:
+    - name: api
+        health:
+          path: /health
+        envFrom:
+          - secretRef:
+              name: envs
+    workload: autbcb
+    startup:
+      enabled: false
+    readiness:
+      initialDelaySeconds: 30
+      periodSeconds: 5
+      successThreshold: 1
+      failureThreshold: 10
+      timeoutSeconds: 5
+    liveness:
+      initialDelaySeconds: 200
+      periodSeconds: 5
+      successThreshold: 1
+      failureThreshold: 10
+      timeoutSeconds: 5
+    hpa:
+      enabled: true
+      max: 2
+      min: 1
+      targetCPU: 80
+    containerPort: 80
+    image:
+      repositoryURI: 289208114389.dkr.ecr.us-east-1.amazonaws.com/picpay-dev/ms-ppb-acad-naturalperson
+    ingress:
+    - enabled: true
+      type: internal-microservices
+      hosts:
+      - hostname: ms-ppb-acad-naturalperson.ms.prod
+        path: "/"
+    podDisruptionBudget:
+      enabled: false
+    limits_memory: 400Mi
+    limits_cpu: 400m
+    requests_cpu: 50m
+    requests_memory: 150Mi
+    service:
+      enabled: true
+      port: 80
+      targetPort: 80
+    lifecycle:
+      preStop:
+      - "/bin/bash"
+      - "-c"
+      - "/bin/sleep 20 && kill -QUIT 1"
+
+  workers: []

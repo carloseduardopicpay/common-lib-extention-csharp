@@ -1,0 +1,85 @@
+global:
+  app_stage: qa
+  image:
+    tag: ${artifact.buildNo}
+  releaseNumber: 0
+  jvm_metrics:
+    enabled: true
+    port: 8081
+  externalSecrets:
+    - enabled: true
+      name: secrets-produto
+      type: vault
+      server: https://vbr.limbo.work/
+      refreshInterval: 5m
+      mountPath: kubernetes-sfpfcb-sae1-hom
+      path: kv/financial_services_pf/hom
+      dataFrom:
+        - secretFile: ms-picpaybank-acad-naturalperson-net
+    - enabled: true
+      name: secrets-area
+      type: vault
+      server: https://vbr.limbo.work/
+      refreshInterval: 5m
+      mountPath: kubernetes-sfpfcb-sae1-hom
+      path: kv/financial_services_pf/hom
+      dataFrom:
+        - secretFile: picpaybank/acad
+picpay-ms-v2:
+  apis:
+  - name: api
+    annotations:
+      observability.ppay.me/bu: financial_services_pf
+    envFrom:
+        - secretRef:
+            name: envs-secrets-produto
+        - secretRef:
+            name: envs-secrets-area
+    workload: autbcb
+    health:
+      path: /health
+    startup:
+      enabled: false
+    readiness:
+      initialDelaySeconds: 30
+      periodSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
+      timeoutSeconds: 5
+    liveness:
+      initialDelaySeconds: 60
+      periodSeconds: 5
+      successThreshold: 1
+      failureThreshold: 4
+      timeoutSeconds: 5
+    hpa:
+      enabled: true
+      max: 2
+      min: 1
+      targetCPU: 80
+    containerPort: 80
+    image:
+      repositoryURI: 289208114389.dkr.ecr.us-east-1.amazonaws.com/picpay-dev/ms-ppb-acad-naturalperson
+    ingress:
+    - enabled: true
+      type: internal-microservices
+      hosts:
+      - hostname: ms-ppb-acad-naturalperson.ms.qa
+        path: "/"
+    podDisruptionBudget:
+      enabled: false
+    limits_memory: 600Mi
+    limits_cpu: 500m
+    requests_cpu: 50m
+    requests_memory: 400Mi
+    service:
+      enabled: true
+      port: 80
+      targetPort: 80
+    lifecycle:
+      preStop:
+      - "/bin/bash"
+      - "-c"
+      - "/bin/sleep 20 && kill -QUIT 1"
+
+  workers: []
