@@ -1,12 +1,10 @@
-﻿using Domain.Entities;
-using Domain.Interfaces.IRepository;
+﻿using Domain.Interfaces.IRepository;
 using Domain.Interfaces.IServices;
 using Infra.Data.Contexts;
 using Microsoft.Data.SqlClient;
 
 namespace Infra.Data.Repositories.ExportarInfobanc
 {
-
     public class InfobancRepository : IInfobankrepository
     {
         private readonly DbContextMemory _dbContextMemory;
@@ -15,8 +13,8 @@ namespace Infra.Data.Repositories.ExportarInfobanc
         private readonly IExportarEnderecoInfobancRepository _exportarEnderecoInfobanc;
         string _connectionString;
         public InfobancRepository(
-            DbContextMemory dbContextMemory, 
-            ILogService logService,  
+            DbContextMemory dbContextMemory,
+            ILogService logService,
             IExportarPessoasInfobancRepository pessoasInfobanc,
             IExportarEnderecoInfobancRepository exportarEnderecoInfobanc)
         {
@@ -38,16 +36,16 @@ namespace Infra.Data.Repositories.ExportarInfobanc
                 {
                     try
                     {
-                       var retornoPessoa   = await _pessoasInfobanc.ExportarPessoas(cnpj, _connectionString);
-                       var retornoEndereco = await _exportarEnderecoInfobanc.ExportarEndereco(cnpj, _connectionString);
+                        var retornoPessoa = await _pessoasInfobanc.ExportarPessoas(cnpj, _connectionString);
+                        var retornoEndereco = await _exportarEnderecoInfobanc.ExportarEndereco(cnpj, _connectionString);
 
-                       await transaction.CommitAsync();
+                        await transaction.CommitAsync();
 
-                        var RetornoFormatado =  $"Retorno ExportarPessoas : {retornoPessoa} \nRetorno Exportar Endereço: {retornoEndereco}";
+                        var RetornoFormatado = $"Retorno ExportarPessoas : {retornoPessoa} \nRetorno Exportar Endereço: {retornoEndereco}";
                         Console.ForegroundColor = ConsoleColor.Blue;
 
-                        Console.WriteLine(RetornoFormatado); 
-                       return await Task.FromResult(RetornoFormatado);
+                        Console.WriteLine(RetornoFormatado);
+                        return await Task.FromResult(RetornoFormatado);
 
                     }
                     catch (Exception ex)
@@ -56,27 +54,26 @@ namespace Infra.Data.Repositories.ExportarInfobanc
                         _logService.LogDefault(ex.Message, ex.StackTrace, "Infra/Data/Repositories/ExportarInfobanc/Exportarparainfobanc", "ERRO");
 
                         await transaction.RollbackAsync();
-                        throw new Exception("Erro em Exportarparainfobanc \n"+ ex.Message);
+                        throw new Exception("Erro em Exportarparainfobanc \n" + ex.Message);
                     }
                 }
             }
         }
-        
 
-        private ClassificacaoPessoa ObterPapelParaInfobanc(Pessoa pessoa)
-        {
-            ClassificacaoPessoa papel;
 
-            if (pessoa.Classificacoes?.OfType<Cliente>().Count() > 0) papel = pessoa.Classificacoes.OfType<Cliente>().FirstOrDefault();
-            else if (pessoa.Classificacoes.OfType<Prospecto>().Count() > 0) papel = pessoa.Classificacoes.OfType<Prospecto>().FirstOrDefault();
+        //private ClassificacaoPessoa ObterPapelParaInfobanc(Pessoa pessoa)
+        //{
+        //    ClassificacaoPessoa papel;
 
-            papel = pessoa.Classificacoes.LastOrDefault();
+        //    if (pessoa.Classificacoes?.OfType<Cliente>().Count() > 0) papel = pessoa.Classificacoes.OfType<Cliente>().FirstOrDefault();
+        //    else if (pessoa.Classificacoes.OfType<Prospecto>().Count() > 0) papel = pessoa.Classificacoes.OfType<Prospecto>().FirstOrDefault();
 
-            papel.Pessoa = pessoa;
+        //    papel = pessoa.Classificacoes.LastOrDefault();
 
-            return papel;
-        }
-       
+        //    papel.Pessoa = pessoa;
+
+        //    return papel;
+        //}
 
     }
 }
