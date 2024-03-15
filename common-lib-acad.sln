@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Data", "Infra.Data\In
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05-dll", "05-dll", "{44FDC4D4-45A3-44F6-AEB6-34743FE843F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dll", "dll\dll.csproj", "{1E91D695-74DD-4C81-8520-1962D355EC0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "dll\Common.csproj", "{1E91D695-74DD-4C81-8520-1962D355EC0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
