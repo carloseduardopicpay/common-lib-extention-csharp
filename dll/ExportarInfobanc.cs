@@ -5,7 +5,6 @@ namespace Common
 {
     public class ExportarInfobanc
     {
-
         string procExportarPessoas = "";
         string procExportarEndereco = "";
         public async Task<string> Exportarparainfobanc(string cnpj, string conexao)
